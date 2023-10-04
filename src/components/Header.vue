@@ -18,7 +18,7 @@
   export default {
     data() {
       return {
-        search: '', // Utilize essa variável para armazenar o valor da pesquisa
+        search: '', 
       };
     },
   };

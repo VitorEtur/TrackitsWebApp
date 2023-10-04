@@ -1,25 +1,32 @@
 /**
  * main.js
  *
- * Bootstraps Vuetify and other plugins then mounts the App`
+ * Bootstraps Vuetify and other plugins then mounts the App
  */
 
-// Components
-import App from './App.vue'
-
-// Composables
 import { createApp } from 'vue'
-
-// Plugins
+import App from './App.vue'
+import router from './router'
+import vuetify from './plugins/vuetify'
 import { registerPlugins } from '@/plugins'
-// import { VDataTable } from 'vuetify/lib/labs/components.mjs'
+import 'vuetify/dist/vuetify.min.css'
 
+import { createVuetify } from 'vuetify'
+import { VDataTable } from 'vuetify/labs/VDataTable'
+
+export default createVuetify({
+ components: {
+    VDataTable,
+ },
+})
 
 const app = createApp(App)
 
+// Use os plugins, router e vuetify
+app.use(router)
+app.use(vuetify)
+
+// Registre outros plugins personalizados
 registerPlugins(app)
 
 app.mount('#app')
-
-// app.use(VDataTable)
-app.use(Vuetify)
