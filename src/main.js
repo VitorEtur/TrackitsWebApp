@@ -8,7 +8,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify'
-import { registerPlugins } from '@/plugins'
+// import { registerPlugins } from '@/plugins'
 import 'vuetify/dist/vuetify.min.css'
 
 import { createVuetify } from 'vuetify'
@@ -27,6 +27,6 @@ app.use(router)
 app.use(vuetify)
 
 // Registre outros plugins personalizados
-registerPlugins(app)
+// registerPlugins(app)
 
 app.mount('#app')

@@ -39,6 +39,7 @@
                 <a :href="item.link" target="_blank">{{ item.link }}</a>
                 <v-icon @click="copiarLink(item.link)" class="copy-icon">mdi-content-copy</v-icon>
               </template>
+              
             </v-data-table>
           </v-col>
         </v-row>
@@ -53,6 +54,7 @@ export default {
     return {
       campoPesquisa: '',
       filteredData: [],
+      virtualItems: [],
       headers: [
         { title: 'DESTINATÁRIO', value: 'destinatario', align: 'center', sortable: false },
         { title: 'LINK', value: 'link', align: 'center', sortable: false },

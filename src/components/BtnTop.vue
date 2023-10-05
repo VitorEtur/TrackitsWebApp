@@ -28,10 +28,10 @@
   <style scoped>
 .btn-topo {
   position: fixed;
-  background-color: #7a26f094;
+  background-color: #7a26f056;
   bottom: 0;
   right: 0;
-  margin: 0 1rem 5rem 0;
+  margin: 0 5rem 5rem 0;
 }
 .btn-topo:hover {
   background-color: #7926f0;
