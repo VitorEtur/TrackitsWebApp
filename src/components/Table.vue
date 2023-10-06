@@ -83,8 +83,7 @@
                                 <v-list-item-title>DATA: {{ evento.data }} - {{ evento.hora }}</v-list-item-title>
                                 <v-list-item-subtitle>LOCAL: {{ evento.local }}</v-list-item-subtitle>
 
-                                <v-list-item-subtitle 
-                                v-bind:style="{ color: evento.status === 'Objeto postado' ? 'green' : '' }">STATUS: {{ evento.status }}</v-list-item-subtitle>
+                                <v-list-item-subtitle v-bind:style="{ color: getEventColor(evento.status) }">STATUS: {{ evento.status }}</v-list-item-subtitle>
 
                                 <v-list-item-subtitle v-for="(subStatus, subIndex) in evento.subStatus" :key="subIndex">
                                   {{ subStatus }}
@@ -260,6 +259,22 @@ export default {
         .finally(() => {
           this.isLoading = false;
         });
+    },
+
+    getEventColor(status) {
+      if (status === 'Objeto postado') {
+        return 'green';
+      } else if (status === 'Objeto saiu para entrega ao remetente') {
+        return 'blue';
+      } else if (status === 'A entrega não pode ser efetuada - Endereço incorreto') {
+        return 'red';
+      } else if (status === 'Objeto entregue ao remetente') {
+        return 'red';
+      } else if (status === 'Objeto saiu para entrega ao destinatário') {
+        return 'blue';
+      } else {
+        return ''; // Cor padrão
+      }
     },
 
     copiarLink(link) {
