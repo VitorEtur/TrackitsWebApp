@@ -1,12 +1,11 @@
 <template>
   <v-app>
-    <!-- <default-bar /> -->
-
     <default-view />
+    <BtnTop />
   </v-app>
 </template>
 
 <script setup>
-  // import DefaultBar from './AppBar.vue'
+  import BtnTop from '@/components/BtnTop.vue';
   import DefaultView from './View.vue'
 </script>

@@ -1,13 +1,12 @@
 <template>
-  <!-- <HelloWorld /> -->
-  <!-- <Header /> -->
+  <!-- <SearchForm /> -->
   <Table />
-  <BtnTop />
+  <!-- <BtnTop /> -->
 </template>
 
 <script setup>
-  // import HelloWorld from '@/components/HelloWorld.vue'
   // import Header from '@/components/Header.vue'
   import Table from '@/components/Table.vue'
-  import BtnTop from '@/components/BtnTop.vue'
+  // import BtnTop from '@/components/BtnTop.vue'
+  // import SearchForm from '@/components/SearchForm.vue';
 </script>

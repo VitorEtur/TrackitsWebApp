@@ -1,19 +1,21 @@
 <template>
+  
   <v-app>
     <v-container>
       <v-main>
         <v-row>
           <v-col cols="12" class="text-center">
-            <h1 class="mt-4">CONSULTA CÓDIGO DE RASTREIO</h1>
+            <h1 class="mt-4">🎈TRACKITS⠀</h1>
             <v-form @submit.prevent="pesquisarLotes">
               <v-row>
-                <v-col cols="12">
+                <v-col cols="12" class="mt-4">
                   <v-text-field
                     v-model="campoPesquisa"
+                    hide-details
                     label="NOME OU NÚMERO DA CARTEIRINHA"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="0">
+                <v-col cols="12">
                   <v-btn
                     color="primary"
                     :loading="isLoading"
@@ -23,12 +25,12 @@
                 </v-col>
               </v-row>
             </v-form>
-            <p id="resultadoPesquisa">{{ resultadoPesquisa }}</p>
+            <p id="resultadoPesquisa" class="mt-4">{{ resultadoPesquisa }}</p>
           </v-col>
         </v-row>
 
         <v-row>
-          <v-col cols="12" class="text-center">
+          <v-col cols="12" class="text-center" v-if="mostrarFiltro">
             <v-btn @click="inverterLista"
               >{{ ordemCrescente ? '▲ Mais recentes ▲' : '▼ Mais antigos ▼'
               }}</v-btn
@@ -37,8 +39,10 @@
         </v-row>
 
         <v-row>
-          <v-col cols="12">
-            <v-data-table
+          <v-col cols="12" class="mt-4">
+            <v-data-table 
+              class="v-data-footer"
+              v-if="mostrarTabela"
               :headers="headers"
               :items="displayedData"
               item-value="destinatario"
@@ -48,6 +52,7 @@
             >
               <template v-slot:item.link="{ item }">
                 <a :href="item.link" target="_blank">{{ item.link }}</a>
+                <br>
                 <v-icon @click="copiarLink(item.link)" class="copy-icon"
                   >mdi-content-copy</v-icon
                 >
@@ -55,110 +60,59 @@
                   @click="showStatusModal(item)"
                   class="expand-icon"
                   :class="{ 'expanded': expanded.includes(item) }"
-                  >mdi-map-search</v-icon
+                  >mdi-map-search-outline</v-icon
                 >
-
-                <!-- <v-btn @click="showStatusModal(item)">Ver Status de Rastreamento</v-btn> -->
 
                 <template>
                   <v-dialog 
                       v-model="modalIsOpen" 
                       activator="parent"
                       max-width="auto"
+                      class="modalStyle"
                       >
                         <v-card>
                           <v-card-title>
-                            Status de Rastreamento
-                            <v-spacer></v-spacer>
                             <v-btn icon @click="closeStatusModal">
                               <v-icon>mdi-close</v-icon>
                             </v-btn>
                           </v-card-title>
                           <v-card-text>
                             <!-- Conteúdo do modal -->
-                            <h1>STATUS DO PEDIDO</h1>
+                            <h2>STATUS DO PEDIDO</h2>
 
                             <v-list v-if="currentItem && currentItem.eventos.length > 0">
+                              <br>
+                              <v-divider></v-divider>
+                              <br>
                               <v-list-item v-for="(evento, index) in currentItem.eventos" :key="index">
                                 <v-list-item-title>DATA: {{ evento.data }} - {{ evento.hora }}</v-list-item-title>
+
                                 <v-list-item-subtitle>LOCAL: {{ evento.local }}</v-list-item-subtitle>
+                                <br>
 
-                                <v-list-item-subtitle v-bind:style="{ color: getEventColor(evento.status) }">STATUS: {{ evento.status }}</v-list-item-subtitle>
+                                <v-list-item-subtitle v-bind:style="{ color: getEventColor(evento.status).color }">{{ getEventColor(evento.status).emoji }} STATUS: {{ evento.status.toUpperCase() }}</v-list-item-subtitle>
 
                                 <v-list-item-subtitle v-for="(subStatus, subIndex) in evento.subStatus" :key="subIndex">
                                   {{ subStatus }}
                                 </v-list-item-subtitle>
+                                <br>
+                                <v-divider></v-divider>
+                                <br>
                               </v-list-item>
                             </v-list>
+
                             <v-list v-else>
                               <v-list-item>
-                                <v-list-item-title>Nenhum evento de rastreamento encontrado.</v-list-item-title>
+                                <v-list-item-title>Caso não apareça nenhum evento de rastreio, consulte o setor da PRODUÇÃO. <br> OBS: Códigos muito antigos, não são possíveis visualizar por aqui, acesse o link de rastreio.</v-list-item-title>
                               </v-list-item>
                             </v-list>
+
                           </v-card-text>
                         </v-card>
                     </v-dialog>
                 </template>
-              </template>
-              
-              <!-- Modelo de expansão personalizado -->
-              <!-- <template v-slot:expanded="{ item }">
-                <v-card>
-                  <v-card-text>
-                    <v-row>
-                      <v-col cols="12">
-                        <div>Destinatário: {{ item.destinatario }}</div>
-                        <div>Data de Criação: {{ item.dataCriacao }}</div>
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
-              </template> -->
-
-
-
-              <!-- <template v-slot:expanded="{ value, currentItem }">
-                <template>
-                  <div>
-                    
-                    <v-dialog 
-                      v-model="modalIsOpen" 
-                      activator="parent"
-                      max-width="auto">
-                        <v-card>
-                          <v-card-title>
-                            Status de Rastreamento
-                            <v-spacer></v-spacer>
-                            <v-btn icon @click="closeStatusModal">
-                              <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                          </v-card-title>
-                          <v-card-text>
-                            Conteúdo do modal
-                            <v-list v-if="currentItem && currentItem.eventos.length > 0">
-                              <v-list-item v-for="(evento, index) in currentItem.eventos" :key="index">
-                                <v-list-item-title>{{ evento.data }} - {{ evento.hora }}</v-list-item-title>
-                                <v-list-item-subtitle>{{ evento.local }}</v-list-item-subtitle>
-                                <v-list-item-subtitle>{{ evento.status }}</v-list-item-subtitle>
-                                <v-list-item-subtitle v-for="(subStatus, subIndex) in evento.subStatus" :key="subIndex">
-                                  {{ subStatus }}
-                                </v-list-item-subtitle>
-                              </v-list-item>
-                            </v-list>
-                            <v-list v-else>
-                              <v-list-item>
-                                <v-list-item-title>Nenhum evento de rastreamento encontrado.</v-list-item-title>
-                              </v-list-item>
-                            </v-list>
-                          </v-card-text>
-                        </v-card>
-                    </v-dialog>
-                  </div>
-
-                </template>
-              </template> -->
-
-              
+              </template>       
+         
             </v-data-table>
           </v-col>
         </v-row>
@@ -179,27 +133,14 @@ export default {
       virtualItems: [],
       expanded: [],
       modalIsOpen: false,
+      mostrarTabela: false,
+      mostrarFiltro: false,
       headers: [
-        {
-          title: 'DESTINATÁRIO',
-          value: 'destinatario',
-          align: 'center',
-          sortable: false,
-        },
+        { title: 'DESTINATÁRIO', value: 'destinatario', align: 'center', sortable: false },
         { title: 'LINK', value: 'link', align: 'center', sortable: false },
-        {
-          title: 'CARTEIRINHA',
-          value: 'carteirinha',
-          align: 'center',
-          sortable: false,
-        },
+        { title: 'CARTEIRINHA', value: 'carteirinha', align: 'center', sortable: false },
         { title: 'OBS', value: 'obs', align: 'center', sortable: false },
-        {
-          title: 'DATA DE CRIAÇÃO',
-          value: 'dataCriacao',
-          align: 'center',
-          sortable: false,
-        },
+        { title: 'DATA DE CRIAÇÃO', value: 'dataCriacao', align: 'center', sortable: false }
       ],
       resultadoPesquisa: 'Pesquise para mostrar informações',
       isLoading: false,
@@ -224,7 +165,7 @@ export default {
       this.isLoading = true;
       var spreadsheetId = '1VJnxR5diGZzvW-MZhWBNYsSOBQvuDFePGe_cGhq45FU';
       // Chave da API do Google Sheets
-      var apiKey = 'AIzaSyDgWHhVhuLRFM3bBaNyKmsQylaqoOqYPQk'; // Substitua pelo seu API Key
+      var apiKey = 'AIzaSyDgWHhVhuLRFM3bBaNyKmsQylaqoOqYPQk'; 
       // Intervalo de células para importar (por exemplo, 'Sheet1!A1:C10')
       var range = 'RASTREIO!A2:E999999';
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
@@ -251,6 +192,9 @@ export default {
           this.resultadoPesquisa = `Códigos encontrados: ${searchData.length}`;
           this.filteredData.reverse();
           this.pagination.totalItems = this.filteredData.length;
+          // Defina mostrarTabela como true para mostrar a tabela
+          this.mostrarTabela = true;
+          this.mostrarFiltro = true;
         })
         .catch(error => {
           console.error('Ocorreu um erro ao pesquisar os lotes:', error);
@@ -262,20 +206,21 @@ export default {
     },
 
     getEventColor(status) {
-      if (status === 'Objeto postado') {
-        return 'green';
-      } else if (status === 'Objeto saiu para entrega ao remetente') {
-        return 'blue';
-      } else if (status === 'A entrega não pode ser efetuada - Endereço incorreto') {
-        return 'red';
-      } else if (status === 'Objeto entregue ao remetente') {
-        return 'red';
-      } else if (status === 'Objeto saiu para entrega ao destinatário') {
-        return 'blue';
-      } else {
-        return ''; // Cor padrão
-      }
+      const statusColorMap = {
+        'Objeto postado': { color: 'green', emoji: '🟢' },
+        'Objeto entregue ao destinatário': { color: 'green', emoji: '🟢' },
+        'Objeto saiu para entrega ao remetente': { color: 'blue', emoji: '🔵' },
+        'Objeto encaminhado': { color: 'blue', emoji: '🔵' },
+        'Objeto saiu para entrega ao destinatário': { color: 'blue', emoji: '🔵' },
+        'A entrega não pode ser efetuada - Endereço incorreto': { color: 'red', emoji: '🔴' },
+        'Objeto entregue ao remetente': { color: 'red', emoji: '🔴' },
+        'A entrega não pode ser efetuada - Empresa sem expediente': { color: 'red', emoji: '🔴' }
+        };
+      return statusColorMap[status] || { color: '', emoji: '' }; // Emoji e cor padrão
     },
+
+
+
 
     copiarLink(link) {
       const textoCopiado = `Segue o código de rastreio: ${link}`;
@@ -303,7 +248,7 @@ export default {
       item.showModal = true; // Defina showModal como true
       this.currentItem = item;
       this.modalIsOpen = true;
-      // this.currentItem.showModal = true;
+
       if (!item.eventos || item.eventos.length === 0) {
         // Carregue os eventos de rastreamento quando abrir o modal
         this.loadRastreamento(item);
@@ -312,7 +257,7 @@ export default {
 
     closeStatusModal() {
       this.modalIsOpen = false;
-      // this.currentItem.showModal = false; // Defina showModal como false
+
     },
 
     async loadRastreamento(item) {
@@ -349,57 +294,46 @@ export default {
       }
     },
 
-    // async expandirLinha(item) {
-    //   if (this.expandedItems.includes(item)) {
-    //     const index = this.expandedItems.indexOf(item);
-    //     this.expandedItems.splice(index, 1);
-    //   } else {
-    //     this.isLoading = true;
-    //     try {
-    //       // Use uma expressão regular para extrair o código de rastreio do link
-    //       const regex = /\/([^/]+)\/?$/;
-    //       const match = item.link.match(regex);
-    //       if (match) {
-    //         const codigoRastreio = match[1]; // O código de rastreio extraído
-
-    //         const response = await axios.get(
-    //           `https://api.linketrack.com/track/json?user=vitor.etur@gmail.com&token=965eefade2f5838dfd741d78e60e7dbaf2cc212a1db282035b66bf693fc2f500&codigo=${codigoRastreio}`
-    //         );
-    //         const data = response.data;
-
-    //         if (data && data.eventos && data.eventos.length > 0) {
-    //           item.eventos = data.eventos;
-    //           console.log('Dados de rastreamento obtidos:', item.eventos);
-    //         } else {
-    //           item.eventos = [];
-    //           console.warn('Nenhum dado de rastreamento encontrado.');
-    //         }
-    //       } else {
-    //         console.error('Link de rastreamento inválido:', item.link);
-    //         item.eventos = [];
-    //       }
-    //     } catch (error) {
-    //       console.error('Erro ao buscar eventos de rastreamento:', error);
-    //       item.eventos = [];
-    //     } finally {
-    //       this.isLoading = false;
-    //       this.expandedItems.push(item);
-    //     }
-    //   }
-    // },
   },
 };
 </script>
 
 <style scoped>
-  /* Adicione estilos personalizados aqui, se necessário */
 
-  /* .copy-icon {
-    color: #7926f0;
-  }
-  .expand-icon {
-    cursor: pointer;
-    color: #7926f0;
-  } */
+h1 {
+  background: linear-gradient(to top, #7926f0, #96c9d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.copy-icon {
+  margin: 5px 0;
+}
+.copy-icon:hover {
+  color: #7926f0;
+  font-size: 1.5rem;
+}
+.expand-icon {
+  margin: 5px 0;
+}
+.expand-icon:hover {
+  color: #7926f0;
+  font-size: 1.5rem;
+}
+
+a {
+  margin: 5px;
+  color: unset;
+}
+
+a:hover {
+  color: #7926f0;
+}
+
+.v-data-footer {
+  font-size: 0.9rem;
+  margin-bottom: 3rem;
+}
+
 
 </style>
