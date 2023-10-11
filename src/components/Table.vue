@@ -6,6 +6,7 @@
         <v-row>
           <v-col cols="12" class="text-center">
             <h1 class="mt-4">🎈TRACKITS⠀</h1>
+            <h2 class="text-h6">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque quia facilis maiores quae culpa, impedit rem, accusamus ipsam cupiditate enim earum ea, eligendi aliquam ad. Tenetur dolor ut nostrum excepturi.</h2>
             <v-form @submit.prevent="pesquisarLotes">
               <v-row>
                 <v-col cols="12" class="mt-4">
@@ -65,7 +66,7 @@
 
                 <template>
                   <v-dialog 
-                      v-model="modalIsOpen" 
+                      v-model="item.showModal" 
                       activator="parent"
                       max-width="auto"
                       class="modalStyle"
@@ -77,8 +78,10 @@
                             </v-btn>
                           </v-card-title>
                           <v-card-text>
+
                             <!-- Conteúdo do modal -->
                             <h2>STATUS DO PEDIDO</h2>
+                            <v-progress-circular class="circleLoading" v-if="isLoading" indeterminate color="primary"></v-progress-circular>
 
                             <v-list v-if="currentItem && currentItem.eventos.length > 0">
                               <br>
@@ -103,7 +106,7 @@
 
                             <v-list v-else>
                               <v-list-item>
-                                <v-list-item-title>Caso não apareça nenhum evento de rastreio, consulte o setor da PRODUÇÃO. <br> OBS: Códigos muito antigos, não são possíveis visualizar por aqui, acesse o link de rastreio.</v-list-item-title>
+                                <v-list-item-title>Caso não apareça nenhum evento de rastreio, consulte o setor Responsável. <br> OBS: Códigos muito antigos, não são possíveis visualizar por aqui, acesse o link de rastreio.</v-list-item-title>
                               </v-list-item>
                             </v-list>
 
@@ -138,9 +141,9 @@ export default {
       headers: [
         { title: 'DESTINATÁRIO', value: 'destinatario', align: 'center', sortable: false },
         { title: 'LINK', value: 'link', align: 'center', sortable: false },
-        { title: 'CARTEIRINHA', value: 'carteirinha', align: 'center', sortable: false },
+        { title: 'ID', value: 'idNome', align: 'center', sortable: false },
         { title: 'OBS', value: 'obs', align: 'center', sortable: false },
-        { title: 'DATA DE CRIAÇÃO', value: 'dataCriacao', align: 'center', sortable: false }
+        { title: 'DATA', value: 'dataCriacao', align: 'center', sortable: false }
       ],
       resultadoPesquisa: 'Pesquise para mostrar informações',
       isLoading: false,
@@ -163,7 +166,7 @@ export default {
   methods: {
     pesquisarLotes() {
       this.isLoading = true;
-      var spreadsheetId = '1VJnxR5diGZzvW-MZhWBNYsSOBQvuDFePGe_cGhq45FU';
+      var spreadsheetId = '1x3CrHIwGdUg8Fxi8WiAdgKsH3Oz6hQdAjO1NRDM-5b0';
       // Chave da API do Google Sheets
       var apiKey = 'AIzaSyDgWHhVhuLRFM3bBaNyKmsQylaqoOqYPQk'; 
       // Intervalo de células para importar (por exemplo, 'Sheet1!A1:C10')
@@ -182,7 +185,7 @@ export default {
           this.filteredData = searchData.map(row => ({
             destinatario: row[0],
             link: row[1],
-            carteirinha: row[2],
+            idNome: row[2],
             obs: row[3],
             dataCriacao: row[4],
             eventos: [], // Inicializa a lista de eventos vazia para cada item
@@ -256,8 +259,9 @@ export default {
     },
 
     closeStatusModal() {
-      this.modalIsOpen = false;
-
+      if (this.currentItem) {
+        this.currentItem.showModal = false;
+      }
     },
 
     async loadRastreamento(item) {
@@ -305,7 +309,11 @@ h1 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-
+h2 {
+  background: linear-gradient(to top, #7926f0, #96c9d8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .copy-icon {
   margin: 5px 0;
 }
@@ -333,6 +341,11 @@ a:hover {
 .v-data-footer {
   font-size: 0.9rem;
   margin-bottom: 3rem;
+}
+
+.circleLoading {
+  width: 10rem;
+  height: 10rem;
 }
 
 
