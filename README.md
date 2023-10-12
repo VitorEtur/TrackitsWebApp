@@ -1,4 +1,7 @@
+LINK DO WEB APP:
 https://trackitsvuetor-hustlei.netlify.app
+
+OBS: Tabela com dados fictícios, como nome, ids e observações geradas aleatóriamentes.
 
 # essentials
 
