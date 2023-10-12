@@ -5,8 +5,8 @@
       <v-main>
         <v-row>
           <v-col cols="12" class="text-center">
-            <h1 class="mt-4">🎈TRACKITS⠀</h1>
-            <h2 class="text-h6">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque quia facilis maiores quae culpa, impedit rem, accusamus ipsam cupiditate enim earum ea, eligendi aliquam ad. Tenetur dolor ut nostrum excepturi.</h2>
+            <h1 class="mt-2">🎈TRACKITS⠀</h1>
+            <h2 class="text-h6">Consulta de rastreios</h2>
             <v-form @submit.prevent="pesquisarLotes">
               <v-row>
                 <v-col cols="12" class="mt-4">
@@ -166,9 +166,9 @@ export default {
   methods: {
     pesquisarLotes() {
       this.isLoading = true;
-      var spreadsheetId = '1x3CrHIwGdUg8Fxi8WiAdgKsH3Oz6hQdAjO1NRDM-5b0';
+      var spreadsheetId = 'ZZZ';
       // Chave da API do Google Sheets
-      var apiKey = 'AIzaSyDgWHhVhuLRFM3bBaNyKmsQylaqoOqYPQk'; 
+      var apiKey = 'ZZZ'; 
       // Intervalo de células para importar (por exemplo, 'Sheet1!A1:C10')
       var range = 'RASTREIO!A2:E999999';
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
@@ -274,7 +274,7 @@ export default {
             const codigoRastreio = match[1]; // O código de rastreio extraído
 
             const response = await axios.get(
-              `https://api.linketrack.com/track/json?user=vitor.etur@gmail.com&token=965eefade2f5838dfd741d78e60e7dbaf2cc212a1db282035b66bf693fc2f500&codigo=${codigoRastreio}`
+              `https://api.linketrack.com/track/json?user=ZZZ&token=ZZZcodigo=${codigoRastreio}`
             );
             const data = response.data;
 
